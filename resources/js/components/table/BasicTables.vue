@@ -73,7 +73,7 @@ onMounted(() => {
                     {{ item.name }}
                 </TableCell>
                 <TableCell class="text-left">
-                    <p class="line-clamp-2 hover:line-clamp-none transition-all duration-300 ease-out">
+                    <p class="line-clamp-2 transition-all duration-300 ease-out">
                         {{ item.description }}
                     </p>
                 </TableCell>

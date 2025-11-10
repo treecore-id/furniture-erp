@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Wood extends Model
 {
     use HasUlids;
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'user_created', 'user_updated'];
 
     public function uniqueIds()
     {

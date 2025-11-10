@@ -28,7 +28,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         <WoodLayout>
             <div class="space-y-6">
                 <HeadingSmall title="Create New Wood" description="Ensure your account is using a long, random password to stay secure" />
-                <Form v-bind="WoodController.create.form()" :options="{preserveScroll: true}" reset-on-success :reset-on-error="[ 'name', 'description']" class="space-y-6" v-slot="{ errors, processing, recentlySuccessful }">
+                <Form v-bind="WoodController.store.form()" :options="{preserveScroll: true}" reset-on-success :reset-on-error="[ 'name', 'description']" class="space-y-6" v-slot="{ errors, processing, recentlySuccessful }">
                     <div class="grid gap-2">
                         <Label for="name">Name</Label>
                         <Input id="name" name="name" type="text" class="mt-1 block w-full" placeholder="Wood Name" />
