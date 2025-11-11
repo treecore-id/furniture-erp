@@ -45,7 +45,7 @@ class WoodController extends Controller
         } catch (\Exception $e) {
             Log::error('Failed to save wood data: ' . $e->getMessage(), [
                 'user_id' => $userId,
-                'input_data' => $request
+                'input_data' => $validated
             ]);
             Session::flash('error', $this->messages['save_failed']);
             return back()->withInput();
@@ -55,7 +55,7 @@ class WoodController extends Controller
     /* Display the specified resource. */
     public function show(Wood $wood)
     {
-        //
+        return Inertia::render('wood/WoodDetailsPage', ['data_wood' => $wood->only('id', 'public_id', 'name', 'description')]);
     }
 
     /* Show the form for editing the specified resource. */
@@ -69,18 +69,17 @@ class WoodController extends Controller
     {
         $userId = Auth::id();
 
-        $validated = $request->validated();
         $validated = $request->safe()->only(['name', 'description']);
         $validated['user_updated'] = $userId;
 
         try {
-            Wood::whereId($wood->id)->update($validated);
+            $wood->update($validated);
             Session::flash('success', $this->messages['update_success']);
             return to_route('wood.index');
         } catch (\Exception $e) {
             Log::error('Failed to update wood data: ' . $e->getMessage(), [
                 'user_id' => $userId,
-                'input_data' => $request
+                'input_data' => $validated
             ]);
             Session::flash('error', $this->messages['update_failed']);
             return back()->withInput();
@@ -98,7 +97,7 @@ class WoodController extends Controller
         ];
 
         try {
-            Wood::whereId($wood->id)->update($data);
+            Wood::where('id', $wood->id)->update($data);
             Session::flash('success', $this->messages['archive_success']);
             return to_route('wood.index');
         } catch (\Exception $e) {

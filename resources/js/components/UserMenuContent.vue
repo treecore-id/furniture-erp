@@ -10,7 +10,7 @@ import { logout } from '@/routes';
 import { edit } from '@/routes/profile';
 import type { User } from '@/types';
 import { Link, router } from '@inertiajs/vue3';
-import { LogOut, MoonStar, Settings, Sun } from 'lucide-vue-next';
+import { LogOut, Settings } from 'lucide-vue-next';
 
 interface Props {
     user: User;
@@ -21,8 +21,6 @@ const handleLogout = () => {
 };
 
 defineProps<Props>();
-
-const toggleTheme = () => document.documentElement.classList.toggle('dark');
 </script>
 
 <template>

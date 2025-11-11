@@ -17,6 +17,7 @@ Route::get('dashboard', function () {
 })->middleware('auth')->name('dashboard');
 
 Route::resource('project', ProjectController::class)->middleware('auth');
-Route::resource('wood', WoodController::class)->middleware('auth');
+Route::resource('wood', WoodController::class)->except('edit')->middleware('auth');
+Route::patch('/wood/{wood}/archive', [WoodController::class, 'archive'])->name('wood.archive')->middleware('auth');
 
 require __DIR__.'/settings.php';

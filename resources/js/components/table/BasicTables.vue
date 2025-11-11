@@ -7,7 +7,7 @@ import DropdownMenuLabel from '../ui/dropdown-menu/DropdownMenuLabel.vue';
 import DropdownMenuSeparator from '../ui/dropdown-menu/DropdownMenuSeparator.vue';
 import DropdownMenuItem from '../ui/dropdown-menu/DropdownMenuItem.vue';
 import { Ellipsis } from 'lucide-vue-next';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
 
 interface Wood {
@@ -38,6 +38,14 @@ const props = defineProps<{
 onMounted(() => {
     console.log(props.data_wood)
 })
+
+const WoodArchive = (public_id: string) => {
+    router.visit(`/wood/${public_id}/archive`, {
+        method: 'patch',
+        preserveState: true,
+        only: ['data_wood'],
+    });
+}
 </script>
 
 <template>
@@ -89,7 +97,7 @@ onMounted(() => {
                                 <Link :href="`/wood/${item.public_id}`" class="block w-full cursor-pointer">Details</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <Link :href="`/wood/${item.public_id}/edit`" class="block w-full cursor-pointer">Edit</Link>
+                                <Link @click="WoodArchive(item.public_id)" as="button" class="block w-full text-left cursor-pointer">Archive</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem>Delete</DropdownMenuItem>
                         </DropdownMenuContent>
