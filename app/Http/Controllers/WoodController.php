@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Wood\StoreWoodRequest;
 use App\Http\Requests\Wood\UpdateWoodRequest;
 use App\Models\Wood;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
@@ -15,7 +14,7 @@ class WoodController extends Controller
     /* Display a listing of the resource. */
     public function index()
     {
-        $data_wood = Wood::select(['id', 'public_id', 'name', 'description'])->orderBy('name')->where('archived', 0)->paginate(10);
+        $data_wood = Wood::select(['id', 'public_id', 'name', 'description'])->orderBy('name')->paginate(10);
 
         return Inertia::render('wood/WoodPage', [
             'data_wood' => $data_wood
@@ -31,20 +30,15 @@ class WoodController extends Controller
     /* Store a newly created resource in storage. */
     public function store(StoreWoodRequest $request)
     {
-        $userId = Auth::id();
-
-        $validated = array_merge($request->validated(), [
-            'user_created' => $userId,
-            'user_updated' => $userId
-        ]);
+        $validated = $request->validated();
 
         try {
             Wood::create($validated);
+
             Session::flash('success', $this->messages['save_success']);
             return to_route('wood.index');
         } catch (\Exception $e) {
             Log::error('Failed to save wood data: ' . $e->getMessage(), [
-                'user_id' => $userId,
                 'input_data' => $validated
             ]);
             Session::flash('error', $this->messages['save_failed']);
@@ -67,18 +61,15 @@ class WoodController extends Controller
     /* Update the specified resource in storage. */
     public function update(UpdateWoodRequest $request, Wood $wood)
     {
-        $userId = Auth::id();
-
         $validated = $request->safe()->only(['name', 'description']);
-        $validated['user_updated'] = $userId;
 
         try {
             $wood->update($validated);
+
             Session::flash('success', $this->messages['update_success']);
             return to_route('wood.index');
         } catch (\Exception $e) {
             Log::error('Failed to update wood data: ' . $e->getMessage(), [
-                'user_id' => $userId,
                 'input_data' => $validated
             ]);
             Session::flash('error', $this->messages['update_failed']);
@@ -89,20 +80,13 @@ class WoodController extends Controller
     /* Archive the specified resource in storage. */
     public function archive(Wood $wood)
     {
-        $userId = Auth::id();
-
-        $data = [
-            'user_updated' => $userId,
-            'archived' => 1,
-        ];
-
         try {
-            Wood::where('id', $wood->id)->update($data);
+            $wood->delete();
+
             Session::flash('success', $this->messages['archive_success']);
             return to_route('wood.index');
         } catch (\Exception $e) {
-            Log::error('Failed to save wood data: ' . $e->getMessage(), [
-                'user_id' => $userId,
+            Log::error('Failed to archive wood data: ' . $e->getMessage(), [
                 'wood_id' => $wood->id
             ]);
             Session::flash('error', $this->messages['archive_failed']);
@@ -113,10 +97,9 @@ class WoodController extends Controller
     /* Remove the specified resource from storage. */
     public function destroy(Wood $wood)
     {
-        $userId = Auth::id();
-
         try {
-            $wood->delete();
+            $wood->forceDelete();
+
             Session::flash('success', $this->messages['delete_success']);
             return to_route('wood.index');
         } catch (\Exception $e) {

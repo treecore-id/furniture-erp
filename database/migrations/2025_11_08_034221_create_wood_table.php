@@ -16,9 +16,9 @@ return new class extends Migration
             $table->ulid('public_id')->unique();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->tinyInteger('archived')->default(0);
-            $table->foreignId('user_created')->constrained('users');
-            $table->foreignId('user_updated')->constrained('users');
+            $table->foreignId('user_created')->nullable()->constrained('users');
+            $table->foreignId('user_updated')->nullable()->constrained('users');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

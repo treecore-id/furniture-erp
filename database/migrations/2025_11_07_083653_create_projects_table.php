@@ -21,9 +21,9 @@ return new class extends Migration
             $table->date('date_deadline');
             $table->date('date_end')->nullable();
             $table->tinyInteger('status')->default(0);
-            $table->tinyInteger('archived')->default(0);
             $table->foreignId('user_created')->constrained('users');
             $table->foreignId('user_updated')->constrained('users');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

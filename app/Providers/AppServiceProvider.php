@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\User;
+// use App\Models\Wood;
+// use App\Observers\WoodObserver;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,5 +28,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('guest', function (User $user) {
             return $user->role === 3;
         });
+
+        // Wood::observe(WoodObserver::class);
     }
 }
