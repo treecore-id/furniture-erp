@@ -1,10 +1,42 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { onMounted } from 'vue';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
+} from '@/components/ui/alert-dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationNext,
+    PaginationPrevious
+} from '@/components/ui/pagination';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
+} from '@/components/ui/table';
 import { Ellipsis } from 'lucide-vue-next';
 
 interface Wood {
@@ -26,8 +58,12 @@ interface InertiaPaginated<T> {
     data: T[];
     links: PaginationLink[];
     total: number;
+    per_page: number;
 }
 
+const props = defineProps<{
+    data_wood: InertiaPaginated<Wood>
+}>();
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Wood',
@@ -35,34 +71,90 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const data_wood = usePage().props.data_wood as InertiaPaginated<Wood>;
+const isDialogOpen = ref(false);
+const actionType = ref<'archive' | 'destroy' | null>(null);
+const targetPublicId = ref<string | null>(null);
+const data_wood = ref<InertiaPaginated<Wood>>(props.data_wood);
+// const data_wood = usePage().props.data_wood as InertiaPaginated<Wood>;
 
-onMounted(() => {
-    console.log(data_wood)
-})
-
-const WoodArchive = (public_id: string) => {
-    if (!confirm('Are you sure to delete?')) {
-        return;
-    } else {
-        router.visit(`/wood/${public_id}/archive`, {
-            method: 'patch',
-            preserveState: true,
+const handlePageChange = (page: number) => {
+    router.get('/wood', { page: page }, {
             only: ['data_wood'],
+            preserveScroll: true,
+        }
+    );
+};
+
+const triggerConfirmation = (publicId: string, type: 'archive' | 'destroy') => {
+    targetPublicId.value = publicId;
+    actionType.value = type;
+    isDialogOpen.value = true;
+};
+
+const handleConfirmationAction = () => {
+    isDialogOpen.value = false;
+
+    if (!targetPublicId.value || !actionType.value) return;
+
+    const public_id = targetPublicId.value;
+    const type = actionType.value;
+
+    if (type === 'archive') {
+        router.patch(`/wood/${public_id}/archive`, {}, {
+            preserveScroll: true,
+            onSuccess: (page: any) => {
+                if (page.props.data_wood) {
+                    data_wood.value = page.props.data_wood
+                }
+            }
+        });
+    } else if (type === 'destroy') {
+        router.delete(`/wood/${public_id}`, {
+            preserveState: true,
+            onSuccess: (page: any) => {
+                if (page.props.data_wood) {
+                    data_wood.value = page.props.data_wood
+                }
+            }
         });
     }
-}
+
+    targetPublicId.value = null;
+    actionType.value = null;
+};
 </script>
 
 <template>
     <Head title="Wood" />
 
     <AppLayout :breadcrumbs="breadcrumbs" :button-text="'/wood/create'">
+        <!-- Alert Dialog: Archive & Delete -->
+        <AlertDialog :open="isDialogOpen" @update:open="isDialogOpen = $event">
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>
+                        Are you sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                        <template v-if="actionType === 'destroy'">
+                            you want to delete it?
+                        </template>
+                        <template v-else-if="actionType === 'archive'">
+                            you want to archive it?
+                        </template>
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel @click="isDialogOpen = false">Cancel</AlertDialogCancel>
+                    <AlertDialogAction @click="handleConfirmationAction">
+                        {{ actionType === 'destroy' ? 'Delete' : 'Archive' }}
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <!-- Data Table -->
             <Table>
-                <TableCaption>
-                    A list of your recent invoices.
-                </TableCaption>
                 <TableHeader>
                     <TableRow>
                         <TableHead class="w-[5%] text-center">
@@ -109,15 +201,30 @@ const WoodArchive = (public_id: string) => {
                                         <Link :href="`/wood/${item.public_id}`" class="block w-full cursor-pointer">Details</Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
-                                        <Link @click.stop="WoodArchive(item.public_id)" as="button" class="block w-full text-left cursor-pointer">Archive</Link>
+                                        <button @click="triggerConfirmation(item.public_id, 'archive')" type="button" class="block w-full text-left cursor-pointer">Archive</button>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <button @click="triggerConfirmation(item.public_id, 'destroy')" type="button" class="block w-full text-left cursor-pointer">Delete</button>
+                                    </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>
                     </TableRow>
                 </TableBody>
             </Table>
+            <!-- Pagination -->
+            <Pagination v-slot="{ page }" @update:page="handlePageChange" :items-per-page="data_wood.per_page" :total="data_wood.total" :default-page="data_wood.current_page">
+                <PaginationContent v-slot="{ items }">
+                    <PaginationPrevious />
+                    <template v-for="(item, index) in items" :key="index">
+                        <PaginationItem v-if="item.type === 'page'" :value="item.value" :is-active="item.value === page">
+                            {{ item.value }}
+                        </PaginationItem>
+                    </template>
+                    <PaginationEllipsis v-if="data_wood.links.length > 5" :index="4" />
+                    <PaginationNext />
+                </PaginationContent>
+            </Pagination>
         </div>
     </AppLayout>
 </template>

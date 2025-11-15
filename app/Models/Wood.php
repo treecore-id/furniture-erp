@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
-use App\Observers\WoodObserver;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[ObservedBy([WoodObserver::class])]
 class Wood extends Model
 {
     use HasUlids, SoftDeletes;
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'user_created', 'user_updated'];
 
     public function uniqueIds()
     {

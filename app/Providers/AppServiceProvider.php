@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Models\User;
-// use App\Models\Wood;
-// use App\Observers\WoodObserver;
+use App\Models\Wood;
+use App\Observers\WoodObserver;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
             return $user->role === 3;
         });
 
-        // Wood::observe(WoodObserver::class);
+        Wood::observe(WoodObserver::class);
     }
 }

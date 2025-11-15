@@ -19,19 +19,17 @@ withDefaults(defineProps<Props>(), {
 const page = usePage();
 
 watch(() => page.props.flash, (message: any) => {
-    if (message.success) {
-        console.log('success');
+    if (message?.success) {
         toast.success(message.success, {
             description: message.success
         });
     }
-    if (message.error) {
-        console.log('error');
+    if (message?.error) {
         toast.error(message.console.error, {
             description: message.console.error
         });
     }
-}, { immediate: true });
+}, { immediate: true, deep: true });
 </script>
 
 <template>

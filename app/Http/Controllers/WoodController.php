@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
+use function Pest\Laravel\session;
+
 class WoodController extends Controller
 {
     /* Display a listing of the resource. */
     public function index()
     {
-        $data_wood = Wood::select(['id', 'public_id', 'name', 'description'])->orderBy('name')->paginate(10);
+        $data_wood = Wood::select(['id', 'public_id', 'name', 'description'])->orderBy('name')->paginate(3);
 
         return Inertia::render('wood/WoodPage', [
             'data_wood' => $data_wood
@@ -83,8 +85,8 @@ class WoodController extends Controller
         try {
             $wood->delete();
 
-            Session::flash('success', $this->messages['archive_success']);
-            return to_route('wood.index');
+            // Session::flash('success');
+            return to_route('wood.index')->with('success', $this->messages['archive_success']);
         } catch (\Exception $e) {
             Log::error('Failed to archive wood data: ' . $e->getMessage(), [
                 'wood_id' => $wood->id
@@ -103,7 +105,7 @@ class WoodController extends Controller
             Session::flash('success', $this->messages['delete_success']);
             return to_route('wood.index');
         } catch (\Exception $e) {
-            Log::error('Failed to save wood data: ' . $e->getMessage(), [
+            Log::error('Failed to delete wood data: ' . $e->getMessage(), [
                 'user_id' => $userId,
                 'wood_id' => $wood->id
             ]);
