@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
-use function Pest\Laravel\session;
-
 class WoodController extends Controller
 {
     /* Display a listing of the resource. */
@@ -35,10 +33,10 @@ class WoodController extends Controller
         $validated = $request->validated();
 
         try {
-            Wood::create($validated);
+            $wood = Wood::create($validated);
 
             Session::flash('success', $this->messages['save_success']);
-            return to_route('wood.index');
+            return to_route('wood.show', $wood->id);
         } catch (\Exception $e) {
             Log::error('Failed to save wood data: ' . $e->getMessage(), [
                 'input_data' => $validated

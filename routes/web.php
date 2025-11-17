@@ -16,7 +16,8 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware('auth')->name('dashboard');
 
-Route::resource('project', ProjectController::class)->middleware('auth');
+Route::resource('project', ProjectController::class)->except('edit')->middleware('auth');
+
 Route::resource('wood', WoodController::class)->except('edit')->middleware('auth');
 Route::patch('/wood/{wood}/archive', [WoodController::class, 'archive'])->name('wood.archive')->middleware('auth');
 

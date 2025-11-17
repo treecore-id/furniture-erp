@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Project extends Model
 {
     use HasUlids, SoftDeletes;
-    protected $fillable = ['name', 'client', 'address', 'description', 'project_value', 'date_start', 'date_deadline', 'date_end'];
+    protected $fillable = ['name', 'client', 'address', 'description', 'project_value', 'date_start', 'date_deadline', 'date_end', 'status', 'user_created', 'user_updated'];
 
     public function uniqueIds()
     {
