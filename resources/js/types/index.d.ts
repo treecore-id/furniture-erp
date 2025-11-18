@@ -37,3 +37,12 @@ export interface User {
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
+
+export interface AppSettings {
+    company_name: string;
+    company_logo: string;
+}
+
+declare interface Window {
+    AppConfig: AppSettings;
+}

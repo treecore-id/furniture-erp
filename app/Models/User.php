@@ -29,6 +29,17 @@ class User extends Authenticatable
         ];
     }
 
+    // AppSetting
+    public function created_app_settings(): HasMany
+    {
+        return $this->hasMany(AppSetting::class, 'user_created');
+    }
+
+    public function updated_app_settings(): HasMany
+    {
+        return $this->hasMany(AppSetting::class, 'user_updated');
+    }
+
     // Project
     public function created_project(): HasMany
     {

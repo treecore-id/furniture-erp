@@ -9,6 +9,7 @@ import { show } from '@/routes/two-factor';
 import { edit as editPassword } from '@/routes/user-password';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
+import { edit as editAppSeting } from '@/routes/app-setting';
 
 const sidebarNavItems: NavItem[] = [
     {
@@ -26,6 +27,10 @@ const sidebarNavItems: NavItem[] = [
     {
         title: 'Appearance',
         href: editAppearance(),
+    },
+    {
+        title: 'App Settings',
+        href: editAppSeting(),
     },
 ];
 

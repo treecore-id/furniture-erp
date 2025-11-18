@@ -19,6 +19,10 @@
             })();
         </script>
 
+        <script>
+            window.AppConfig = @json(config('app_settings'));
+        </script>
+
         {{-- Inline style to set the HTML background color based on our theme in app.css --}}
         <style>
             html {

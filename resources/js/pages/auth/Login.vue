@@ -1,22 +1,29 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
-import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Card, CardContent } from '@/components/ui/card';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import AuthBase from '@/layouts/AuthLayout.vue';
-import { register } from '@/routes';
+import { cn } from '@/lib/utils';
 import { store } from '@/routes/login';
-import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/vue3';
+import { Eye, EyeClosed } from 'lucide-vue-next';
+import { HTMLAttributes, ref } from 'vue';
 
-defineProps<{
+const props = defineProps<{
     status?: string;
     canResetPassword: boolean;
     canRegister: boolean;
-}>();
+    class?: HTMLAttributes["class"]
+}>()
+
+const showPassword = ref(false)
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value
+}
 </script>
 
 <template>
@@ -25,38 +32,61 @@ defineProps<{
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
             {{ status }}
         </div>
-        <Form v-bind="store.form()" :reset-on-success="['password']" v-slot="{ errors, processing }" class="flex flex-col gap-6">
-            <div class="grid gap-6">
-                <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
-                    <Input id="email" type="email" name="email" required autofocus :tabindex="1" autocomplete="email" placeholder="email@example.com" />
-                    <InputError :message="errors.email" />
-                </div>
-                <div class="grid gap-2">
-                    <div class="flex items-center justify-between">
-                        <Label for="password">Password</Label>
-                        <TextLink v-if="canResetPassword" :href="request()" class="text-sm" :tabindex="5">
-                            Forgot password?
-                        </TextLink>
+        <div :class="cn('flex flex-col gap-6', props.class)">
+            <Card class="overflow-hidden p-0">
+                <CardContent class="grid p-0 md:grid-cols-2">
+                    <Form v-bind="store.form()" :reset-on-success="['password']" v-slot="{ errors, processing }" class="p-6 md:p-8">
+                        <FieldGroup>
+                            <div class="flex flex-col items-center gap-2 text-center">
+                                <h1 class="text-2xl font-bold">
+                                    Welcome back
+                                </h1>
+                                <p class="text-muted-foreground text-balance">
+                                    Login to your account
+                                </p>
+                            </div>
+                            <Field>
+                                <FieldLabel for="email">
+                                    Email
+                                </FieldLabel>
+                                <Input id="email" type="email" name="email" required autofocus :tabindex="1" autocomplete="email" placeholder="email@example.com" />
+                                <InputError :message="errors.email" />
+                            </Field>
+                            <Field>
+                                <FieldLabel for="password">
+                                    Password
+                                </FieldLabel>
+                                <div class="relative">
+                                    <Input id="password" :type="showPassword ? 'text' : 'password'" name="password" required :tabindex="2" autocomplete="current-password" placeholder="Password" />
+                                    <span @click="togglePasswordVisibility" class="absolute z-30 text-gray-400 hover:text-gray-500 -translate-y-1/2 cursor-pointer right-4 top-1/2">
+                                        <Eye v-if="!showPassword" class="size-5" />
+                                        <EyeClosed v-else class="size-5" />
+                                    </span>
+                                </div>
+                                <InputError :message="errors.password" />
+                            </Field>
+                            <Field>
+                                <Button type="submit" class="mt-3 w-full cursor-pointer" :tabindex="3" :disabled="processing" data-test="login-button">
+                                    <Spinner v-if="processing" />
+                                    Log in
+                                </Button>
+                            </Field>
+                            <FieldDescription class="text-center">
+                                Don't have an account?
+                                <a href="#">
+                                    Sign up
+                                </a>
+                            </FieldDescription>
+                        </FieldGroup>
+                    </Form>
+                    <div class="bg-muted relative hidden md:block">
+                        <img src="https://www.shadcn-vue.com/placeholder.svg" alt="Image" class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale">
                     </div>
-                    <Input id="password" type="password" name="password" required :tabindex="2" autocomplete="current-password" placeholder="Password" />
-                    <InputError :message="errors.password" />
-                </div>
-                <div class="flex items-center justify-between">
-                    <Label for="remember" class="flex items-center space-x-3">
-                        <Checkbox id="remember" name="remember" :tabindex="3" />
-                        <span>Remember me</span>
-                    </Label>
-                </div>
-                <Button type="submit" class="mt-4 w-full" :tabindex="4" :disabled="processing" data-test="login-button">
-                    <Spinner v-if="processing" />
-                    Log in
-                </Button>
-            </div>
-            <div class="text-center text-sm text-muted-foreground" v-if="canRegister">
-                Don't have an account?
-                <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
-            </div>
-        </Form>
+                </CardContent>
+            </Card>
+            <FieldDescription class="px-6 text-center">
+                By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </FieldDescription>
+        </div>
     </AuthBase>
 </template>
