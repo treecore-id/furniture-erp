@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Project extends Model
+class ProjectOrder extends Model
 {
     use HasUlids, SoftDeletes;
-    protected $fillable = ['name', 'client', 'address', 'description', 'project_value', 'date_start', 'date_deadline', 'date_end', 'status', 'user_created', 'user_updated'];
+    protected $fillable = ['project_id', 'name', 'product_id', 'product_code', 'qty', 'cbm', 'unit_price', 'total_price', 'user_created', 'user_updated'];
 
     public function uniqueIds()
     {
@@ -23,10 +22,10 @@ class Project extends Model
         return 'public_id';
     }
 
-    // Project Order
-    public function project_orders(): HasMany
+    // Project
+    public function projects(): BelongsTo
     {
-        return $this->hasMany(ProjectOrder::class);
+        return $this->belongsTo(Project::class);
     }
 
     // User

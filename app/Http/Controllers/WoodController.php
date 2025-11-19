@@ -14,7 +14,9 @@ class WoodController extends Controller
     /* Display a listing of the resource. */
     public function index()
     {
-        $data_wood = Wood::select(['id', 'public_id', 'name', 'description'])->orderBy('name')->paginate(3);
+        $data_wood = Wood::select([
+            'id', 'public_id', 'name', 'description'
+        ])->orderBy('name')->paginate(3);
 
         return Inertia::render('wood/WoodPage', [
             'data_wood' => $data_wood
@@ -83,7 +85,6 @@ class WoodController extends Controller
         try {
             $wood->delete();
 
-            // Session::flash('success');
             return to_route('wood.index')->with('success', $this->messages['archive_success']);
         } catch (\Exception $e) {
             Log::error('Failed to archive wood data: ' . $e->getMessage(), [

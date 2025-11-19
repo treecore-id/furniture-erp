@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\WoodController;
 use Illuminate\Support\Facades\Route;
@@ -12,13 +14,25 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware('auth')->name('dashboard');
 
-Route::resource('project', ProjectController::class)->except('edit')->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 
-Route::resource('wood', WoodController::class)->except('edit')->middleware('auth');
-Route::patch('/wood/{wood}/archive', [WoodController::class, 'archive'])->name('wood.archive')->middleware('auth');
+    Route::resource('project', ProjectController::class)->except('edit');
+    Route::patch('/project/{project}/archive', [ProjectController::class, 'archive'])->name('project.archive');
+
+    Route::resource('product', ProductController::class)->except('edit');
+    Route::patch('/product/{product}/archive', [ProductController::class, 'archive'])->name('product.archive');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::redirect('manage', '/manage/wood');
+
+    Route::resource('manage/category', CategoryController::class)->except('edit');
+    Route::patch('manage/category/{category}/archive', [CategoryController::class, 'archive'])->name('category.archive');
+
+    Route::resource('manage/wood', WoodController::class)->except('edit');
+    Route::patch('manage/wood/{wood}/archive', [WoodController::class, 'archive'])->name('wood.archive');
+});
 
 require __DIR__.'/settings.php';

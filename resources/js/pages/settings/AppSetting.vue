@@ -31,6 +31,9 @@ const submit = () => {
     form.post('/settings/apps', {
         preserveScroll: true,
         onSuccess: (response: any) => {
+            form.company_name = form.data().company_name;
+            form.company_logo = null;
+            
             settings.company_name = form.company_name;
             const new_logo_url = response.props.flash.new_logo_url;
 

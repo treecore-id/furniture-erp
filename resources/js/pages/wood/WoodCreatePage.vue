@@ -1,24 +1,3 @@
-<script setup lang="ts">
-import WoodController from '@/actions/App/Http/Controllers/WoodController';
-import AppLayout from '@/layouts/AppLayout.vue';
-import { Form, Head } from '@inertiajs/vue3';
-
-import HeadingSmall from '@/components/HeadingSmall.vue';
-import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { type BreadcrumbItem } from '@/types';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Wood',
-        href: '/wood/create',
-    },
-];
-</script>
-
 <template>
     <Head title="Wood" />
 
@@ -53,3 +32,25 @@ const breadcrumbs: BreadcrumbItem[] = [
         </Form>
     </AppLayout>
 </template>
+
+<script setup lang="ts">
+import WoodController from '@/actions/App/Http/Controllers/WoodController';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { Form, Head } from '@inertiajs/vue3';
+
+import HeadingSmall from '@/components/HeadingSmall.vue';
+import InputError from '@/components/InputError.vue';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { type BreadcrumbItem } from '@/types';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Wood',
+        href: '/wood/create',
+    },
+];
+</script>
+

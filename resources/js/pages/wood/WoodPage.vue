@@ -1,108 +1,111 @@
 <template>
     <Head title="Wood" />
-    <AppLayout :breadcrumbs="breadcrumbs" :button-text="'/wood/create'">
-        <!-- Alert Dialog: Archive & Delete -->
-        <AlertDialog :open="isDialogOpen" @update:open="isDialogOpen = $event">
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>
-                        Are you sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                        <template v-if="actionType === 'destroy'">
-                            you want to delete it?
+    <ManageLayout>
+
+        <AppLayout :breadcrumbs="breadcrumbs" :button-text="'/wood/create'">
+            <!-- Alert Dialog: Archive & Delete -->
+            <!-- <AlertDialog :open="isDialogOpen" @update:open="isDialogOpen = $event">
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Are you sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            <template v-if="actionType === 'destroy'">
+                                you want to delete it?
+                            </template>
+                            <template v-else-if="actionType === 'archive'">
+                                you want to archive it?
+                            </template>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel @click="isDialogOpen = false">Cancel</AlertDialogCancel>
+                        <AlertDialogAction @click="handleConfirmationAction">
+                            {{ actionType === 'destroy' ? 'Delete' : 'Archive' }}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog> -->
+            <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+                <!-- <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead class="w-[5%] text-center">
+                                #
+                            </TableHead>
+                            <TableHead class="w-[15%]">
+                                Name
+                            </TableHead>
+                            <TableHead class="w-[70%]">
+                                Description
+                            </TableHead>
+                            <TableHead class="w-[10%] text-center">
+                                Action
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow v-if="data_wood.data.length == 0">
+                            <TableCell></TableCell>
+                            <TableCell class="text-left text-gray-600 dark:text-gray-300" colspan="2">— data is empty —</TableCell>
+                            <TableCell></TableCell>
+                        </TableRow>
+                        <TableRow v-else v-for="(item, index) in data_wood.data" :key="index">
+                            <TableCell class="font-medium text-center">
+                                {{ index + 1 }}
+                            </TableCell>
+                            <TableCell class="text-left">
+                                {{ item.name }}
+                            </TableCell>
+                            <TableCell class="text-left">
+                                <p class="line-clamp-2 transition-all duration-300 ease-out">
+                                    {{ item.description }}
+                                </p>
+                            </TableCell>
+                            <TableCell class="text-center">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <Ellipsis class="text-gray-600 hover:cursor-pointer"/>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem>
+                                            <Link :href="`/wood/${item.public_id}`" class="block w-full cursor-pointer">Details</Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                            <button @click="triggerConfirmation(item.public_id, 'archive')" type="button" class="block w-full text-left cursor-pointer">Archive</button>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                            <button @click="triggerConfirmation(item.public_id, 'destroy')" type="button" class="block w-full text-left cursor-pointer">Delete</button>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table> -->
+                <!-- Pagination -->
+                <!-- <Pagination v-slot="{ page }" @update:page="handlePageChange" :items-per-page="data_wood.per_page" :total="data_wood.total" :default-page="data_wood.current_page">
+                    <PaginationContent v-slot="{ items }">
+                        <PaginationPrevious />
+                        <template v-for="(item, index) in items" :key="index">
+                            <PaginationItem v-if="item.type === 'page'" :value="item.value" :is-active="item.value === page">
+                                {{ item.value }}
+                            </PaginationItem>
                         </template>
-                        <template v-else-if="actionType === 'archive'">
-                            you want to archive it?
-                        </template>
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel @click="isDialogOpen = false">Cancel</AlertDialogCancel>
-                    <AlertDialogAction @click="handleConfirmationAction">
-                        {{ actionType === 'destroy' ? 'Delete' : 'Archive' }}
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <!-- Data Table -->
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead class="w-[5%] text-center">
-                            #
-                        </TableHead>
-                        <TableHead class="w-[15%]">
-                            Name
-                        </TableHead>
-                        <TableHead class="w-[70%]">
-                            Description
-                        </TableHead>
-                        <TableHead class="w-[10%] text-center">
-                            Action
-                        </TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    <TableRow v-if="data_wood.data.length == 0">
-                        <TableCell></TableCell>
-                        <TableCell class="text-left text-gray-600 dark:text-gray-300" colspan="2">— data is empty —</TableCell>
-                        <TableCell></TableCell>
-                    </TableRow>
-                    <TableRow v-else v-for="(item, index) in data_wood.data" :key="index">
-                        <TableCell class="font-medium text-center">
-                            {{ index + 1 }}
-                        </TableCell>
-                        <TableCell class="text-left">
-                            {{ item.name }}
-                        </TableCell>
-                        <TableCell class="text-left">
-                            <p class="line-clamp-2 transition-all duration-300 ease-out">
-                                {{ item.description }}
-                            </p>
-                        </TableCell>
-                        <TableCell class="text-center">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <Ellipsis class="text-gray-600 hover:cursor-pointer"/>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem>
-                                        <Link :href="`/wood/${item.public_id}`" class="block w-full cursor-pointer">Details</Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <button @click="triggerConfirmation(item.public_id, 'archive')" type="button" class="block w-full text-left cursor-pointer">Archive</button>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <button @click="triggerConfirmation(item.public_id, 'destroy')" type="button" class="block w-full text-left cursor-pointer">Delete</button>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
-            <!-- Pagination -->
-            <Pagination v-slot="{ page }" @update:page="handlePageChange" :items-per-page="data_wood.per_page" :total="data_wood.total" :default-page="data_wood.current_page">
-                <PaginationContent v-slot="{ items }">
-                    <PaginationPrevious />
-                    <template v-for="(item, index) in items" :key="index">
-                        <PaginationItem v-if="item.type === 'page'" :value="item.value" :is-active="item.value === page">
-                            {{ item.value }}
-                        </PaginationItem>
-                    </template>
-                    <PaginationEllipsis v-if="data_wood.links.length > 5" :index="4" />
-                    <PaginationNext />
-                </PaginationContent>
-            </Pagination>
-        </div>
-    </AppLayout>
+                        <PaginationEllipsis v-if="data_wood.links.length > 5" :index="4" />
+                        <PaginationNext />
+                    </PaginationContent>
+                </Pagination> -->
+            </div>
+        </AppLayout>
+    </ManageLayout>
 </template>
 
 <script setup lang="ts">
+import ManageLayout from '@/layouts/manage/Layout.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
@@ -179,7 +182,6 @@ const isDialogOpen = ref(false);
 const actionType = ref<'archive' | 'destroy' | null>(null);
 const targetPublicId = ref<string | null>(null);
 const data_wood = ref<InertiaPaginated<Wood>>(props.data_wood);
-// const data_wood = usePage().props.data_wood as InertiaPaginated<Wood>;
 
 const handlePageChange = (page: number) => {
     router.get('/wood', { page: page }, {

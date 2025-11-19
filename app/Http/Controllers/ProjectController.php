@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
+use App\Http\Requests\Project\StoreProjectRequest;
+use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -32,6 +32,7 @@ class ProjectController extends Controller
     /* Store a newly created resource in storage. */
     public function store(StoreProjectRequest $request)
     {
+        dd($request);
         $validated = $request->validated();
 
         try {

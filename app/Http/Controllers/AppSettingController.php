@@ -24,7 +24,7 @@ class AppSettingController extends Controller
     {
         $validated = $request->validate([
             'company_name' => 'required|string|max:255',
-            'company_logo' => 'nullable|file|image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+            'company_logo' => 'nullable|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $company_logo = $request->file('company_logo');
@@ -44,8 +44,8 @@ class AppSettingController extends Controller
 
                 $logo_setting->update(['value' => $logo_url]);
 
-                if (Storage::disk('public')->exists($oldUrl)) {
-                    Storage::disk('public')->delete($oldUrl);
+                if ($oldUrl && Storage::disk('public')->exists(str_replace('/storage/', '', $oldUrl))) {
+                    Storage::disk('public')->delete(str_replace('/storage/', '', $oldUrl));
                 }
             }
 

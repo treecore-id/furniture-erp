@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Project extends Model
+class Product extends Model
 {
     use HasUlids, SoftDeletes;
-    protected $fillable = ['name', 'client', 'address', 'description', 'project_value', 'date_start', 'date_deadline', 'date_end', 'status', 'user_created', 'user_updated'];
+    protected $fillable = ['category_id', 'name', 'description', 'product_code', 'unit_price', 'user_created', 'user_updated'];
 
     public function uniqueIds()
     {
@@ -23,10 +23,22 @@ class Project extends Model
         return 'public_id';
     }
 
-    // Project Order
-    public function project_orders(): HasMany
+    // Category
+    public function categories(): BelongsTo
     {
-        return $this->hasMany(ProjectOrder::class);
+        return $this->belongsTo(Category::class);
+    }
+
+    // Product Attribute
+    public function product_attributes(): HasMany
+    {
+        return $this->hasMany(ProductAttribute::class);
+    }
+
+    // Product Image
+    public function product_images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class);
     }
 
     // User

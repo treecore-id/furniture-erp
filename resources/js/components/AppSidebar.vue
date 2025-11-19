@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { FolderOpen, Layers, LayoutGrid } from 'lucide-vue-next';
+import { Container, FolderOpen, Layers, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -33,6 +33,13 @@ const mainNavItems: NavItem[] = [
         icon: Layers,
     },
 ];
+const secondaryNavItems: NavItem[] = [
+    {
+        title: 'Manage',
+        href: '/manage',
+        icon: Container,
+    },
+];
 </script>
 
 <template>
@@ -49,7 +56,7 @@ const mainNavItems: NavItem[] = [
             </SidebarMenu>
         </SidebarHeader>
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain :main-items="mainNavItems" :secondary-items="secondaryNavItems" />
         </SidebarContent>
         <SidebarFooter>
             <NavUser />
