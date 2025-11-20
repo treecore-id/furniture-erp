@@ -9,7 +9,6 @@ import { toast } from 'vue-sonner';
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
-    buttonText?: string;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -33,7 +32,7 @@ watch(() => page.props.flash, (message: any) => {
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbs" :button-text="buttonText">
+    <AppLayout :breadcrumbs="breadcrumbs">
         <slot />
         <Toaster class="pointer-events-auto"></Toaster>
     </AppLayout>

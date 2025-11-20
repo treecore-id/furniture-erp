@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('app_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('key_name')->unique();
+            $table->string('key_name', 50)->unique();
             $table->text('value')->nullable();
-            $table->string('data_type')->default('string');
+            $table->string('data_type', 20)->default('string');
             $table->text('description')->nullable();
-            $table->foreignId('user_created')->nullable()->constrained('users');
-            $table->foreignId('user_updated')->nullable()->constrained('users');
+            $table->foreignId('user_created')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('user_updated')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

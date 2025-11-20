@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
     /* Display a listing of the resource. */
     public function index()
     {
-        //
+        $data_category = Category::select([
+            'id', 'public_id', 'name', 'description'
+        ])->orderBy('name')->paginate(3);
+
+        return Inertia::render('category/CategoryPage', [
+            'data_category' => $data_category
+        ]);
     }
 
     /* Show the form for creating a new resource. */

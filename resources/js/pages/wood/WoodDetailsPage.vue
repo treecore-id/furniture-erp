@@ -1,49 +1,11 @@
-<script setup lang="ts">
-import WoodController from '@/actions/App/Http/Controllers/WoodController';
-import AppLayout from '@/layouts/AppLayout.vue';
-import { Form, Head, useForm, usePage } from '@inertiajs/vue3';
-
-import HeadingSmall from '@/components/HeadingSmall.vue';
-import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { type BreadcrumbItem } from '@/types';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Wood',
-        href: '/wood/create',
-    },
-];
-
-interface Wood {
-    id: number;
-    public_id: string;
-    name: string;
-    description: string;
-}
-
-const data_wood = usePage().props.data_wood as Wood;
-
-const form_edit_wood = useForm<Wood>({
-    id: parseInt(data_wood.public_id),
-    public_id: data_wood.public_id,
-    name: data_wood.name,
-    description: data_wood.description
-})
-</script>
-
 <template>
-    <Head title="Wood" />
+    <Head :title="data_wood.name " />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Create New Wood" />
         <Form v-bind="WoodController.update.form(form_edit_wood)" :options="{preserveScroll: true}" reset-on-success :reset-on-error="[ 'name', 'description']" v-slot="{ errors, processing, recentlySuccessful }" autocomplete="off">
             <div class="flex flex-col px-4 py-6">
-                <HeadingSmall title="Create New Wood" description="Ensure your account is using a long, random password to stay secure" />
                 <section class="max-w-xl space-y-6">
+                    <HeadingSmall :title="'Wood : ' + data_wood.name " description="Ensure your account is using a long, random password to stay secure" />
                     <div class="space-y-6">
                         <div class="grid gap-2">
                             <Label for="name">Name</Label>
@@ -69,3 +31,44 @@ const form_edit_wood = useForm<Wood>({
         </Form>
     </AppLayout>
 </template>
+
+<script setup lang="ts">
+import WoodController from '@/actions/App/Http/Controllers/WoodController';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { Form, Head, useForm, usePage } from '@inertiajs/vue3';
+
+import HeadingSmall from '@/components/HeadingSmall.vue';
+import InputError from '@/components/InputError.vue';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { type BreadcrumbItem } from '@/types';
+
+interface Wood {
+    id: number;
+    public_id: string;
+    name: string;
+    description: string;
+}
+
+const data_wood = usePage().props.data_wood as Wood;
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Wood',
+        href: '/wood/create',
+    },
+    {
+        title: data_wood.name,
+        href: '#',
+    }
+];
+
+const form_edit_wood = useForm<Wood>({
+    id: parseInt(data_wood.public_id),
+    public_id: data_wood.public_id,
+    name: data_wood.name,
+    description: data_wood.description
+})
+</script>

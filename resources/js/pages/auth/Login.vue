@@ -80,7 +80,7 @@ const togglePasswordVisibility = () => {
                         </FieldGroup>
                     </Form>
                     <div class="bg-muted relative hidden md:block">
-                        <img src="https://www.shadcn-vue.com/placeholder.svg" alt="Image" class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale">
+                        <img src="/images/pexels-whynugrohou-3097112.jpg" alt="Image" class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale">
                     </div>
                 </CardContent>
             </Card>

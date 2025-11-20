@@ -12,8 +12,8 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->ulid('public_id')->unique();
-            $table->string('name');
-            $table->string('client');
+            $table->string('name', 50);
+            $table->string('client', 50);
             $table->string('address')->nullable();
             $table->text('description')->nullable();
             $table->decimal('project_value', 15, 2)->default(0);
@@ -21,8 +21,8 @@ return new class extends Migration
             $table->date('date_deadline');
             $table->date('date_end')->nullable();
             $table->tinyInteger('status')->default(0);
-            $table->foreignId('user_created')->constrained('users');
-            $table->foreignId('user_updated')->constrained('users');
+            $table->foreignId('user_created')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('user_updated')->nullable()->constrained('users')->nullOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -34,3 +34,4 @@ return new class extends Migration
         Schema::dropIfExists('projects');
     }
 };
+

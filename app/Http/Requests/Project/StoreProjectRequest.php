@@ -26,4 +26,17 @@ class StoreProjectRequest extends FormRequest
             'date_end' => 'nullable|date',
         ];
     }
+
+    // Get the error messages for the defined validation rules.
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'name is required',
+            'name.max' => 'maximum value 255 characters',
+            'client.required' => 'client is required',
+            'client.max' => 'maximum value 255 characters',
+            'date_start.required' => 'date start is required',
+            'date_deadline.required' => 'target date is required',
+        ];
+    }
 }

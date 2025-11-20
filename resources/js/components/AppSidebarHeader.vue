@@ -2,12 +2,10 @@
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import type { BreadcrumbItemType } from '@/types';
-import { Link } from '@inertiajs/vue3';
 
 withDefaults(
     defineProps<{
         breadcrumbs?: BreadcrumbItemType[];
-        buttonText?: string;
     }>(),
     {
         breadcrumbs: () => [],
@@ -23,6 +21,5 @@ withDefaults(
                 <Breadcrumbs :breadcrumbs="breadcrumbs" />
             </template>
         </div>
-        <Link v-if="buttonText" :href="buttonText" class="text-foreground text-sm font-normal">Create New</Link>
     </header>
 </template>

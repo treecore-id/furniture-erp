@@ -1,5 +1,5 @@
 <template>
-    <Head title="Projects" />
+    <Head title="Category" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <!-- Alert Dialog: Archive & Delete -->
         <AlertDialog :open="isDialogOpen" @update:open="isDialogOpen = $event">
@@ -26,27 +26,20 @@
             </AlertDialogContent>
         </AlertDialog>
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <!-- Data Table -->
             <Table>
                 <TableHeader>
                     <TableRow>
                         <TableHead class="w-[5%] text-center">
                             #
                         </TableHead>
-                        <TableHead class="w-[25%]">
+                        <TableHead class="w-[30%]">
                             Name
                         </TableHead>
+                        <TableHead class="w-[30%]">
+                            Slug
+                        </TableHead>
                         <TableHead class="w-[25%]">
-                            Client
-                        </TableHead>
-                        <TableHead class="w-[15%]">
-                            Value
-                        </TableHead>
-                        <TableHead class="w-[10%]">
-                            Status
-                        </TableHead>
-                        <TableHead class="w-[10%]">
-                            Deadline
+                            Parent
                         </TableHead>
                         <TableHead class="w-[10%] text-center">
                             Action
@@ -54,12 +47,12 @@
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow v-if="data_project.data.length == 0">
+                    <TableRow v-if="data_category.data.length == 0">
                         <TableCell></TableCell>
-                        <TableCell class="text-left text-gray-600 dark:text-gray-300" colspan="5">— data is empty —</TableCell>
+                        <TableCell class="text-left text-gray-600 dark:text-gray-300" colspan="2">— data is empty —</TableCell>
                         <TableCell></TableCell>
                     </TableRow>
-                    <TableRow v-else v-for="(item, index) in data_project.data" :key="index">
+                    <TableRow v-else v-for="(item, index) in data_category.data" :key="index">
                         <TableCell class="font-medium text-center">
                             {{ index + 1 }}
                         </TableCell>
@@ -67,16 +60,10 @@
                             {{ item.name }}
                         </TableCell>
                         <TableCell class="text-left">
-                            {{ item.client }}
+                            {{ item.slug }}
                         </TableCell>
                         <TableCell class="text-left">
-                            {{ item.project_value }}
-                        </TableCell>
-                        <TableCell class="text-left">
-                            {{ item.status }}
-                        </TableCell>
-                        <TableCell class="text-left">
-                            {{ item.date_deadline }}
+                            {{ item.parent_id }}
                         </TableCell>
                         <TableCell class="text-center">
                             <DropdownMenu>
@@ -87,7 +74,7 @@
                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem>
-                                        <Link :href="`/project/${item.public_id}`" class="block w-full cursor-pointer">Details</Link>
+                                        <Link :href="`/category/${item.public_id}`" class="block w-full cursor-pointer">Details</Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
                                         <button @click="triggerConfirmation(item.public_id, 'archive')" type="button" class="block w-full text-left cursor-pointer">Archive</button>
@@ -102,7 +89,7 @@
                 </TableBody>
             </Table>
             <!-- Pagination -->
-            <Pagination v-slot="{ page }" @update:page="handlePageChange" :items-per-page="data_project.per_page" :total="data_project.total" :default-page="data_project.current_page">
+            <Pagination v-slot="{ page }" @update:page="handlePageChange" :items-per-page="data_category.per_page" :total="data_category.total" :default-page="data_category.current_page">
                 <PaginationContent v-slot="{ items }">
                     <PaginationPrevious />
                     <template v-for="(item, index) in items" :key="index">
@@ -110,7 +97,7 @@
                             {{ item.value }}
                         </PaginationItem>
                     </template>
-                    <PaginationEllipsis v-if="data_project.links.length > 5" :index="4" />
+                    <PaginationEllipsis v-if="data_category.links.length > 5" :index="4" />
                     <PaginationNext />
                 </PaginationContent>
             </Pagination>
@@ -122,6 +109,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { Ellipsis } from 'lucide-vue-next';
 import { ref } from 'vue';
 import {
     AlertDialog,
@@ -157,20 +145,13 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table';
-import { Ellipsis } from 'lucide-vue-next';
 
-interface Project {
+interface Category {
     id: number;
     public_id: string;
     name: string;
-    client: string;
-    address: string;
-    description: string;
-    project_value: number;
-    date_start: string;
-    date_deadline: string;
-    date_end: string;
-    status: number;
+    slug: string;
+    parent_id: number;
 }
 
 interface PaginationLink {
@@ -188,24 +169,25 @@ interface InertiaPaginated<T> {
     per_page: number;
 }
 
-const props = defineProps<{
-    data_project: InertiaPaginated<Project>
-}>();
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Project',
-        href: '/project',
+        title: 'Category',
+        href: '/category',
     },
 ];
+
+const props = defineProps<{
+    data_category: InertiaPaginated<Category>
+}>();
 
 const isDialogOpen = ref(false);
 const actionType = ref<'archive' | 'destroy' | null>(null);
 const targetPublicId = ref<string | null>(null);
-const data_project = ref<InertiaPaginated<Project>>(props.data_project);
+const data_category = ref<InertiaPaginated<Category>>(props.data_category);
 
 const handlePageChange = (page: number) => {
-    router.get('/project', { page: page }, {
-            only: ['data_project'],
+    router.get('/category', { page: page }, {
+            only: ['data_category'],
             preserveScroll: true,
         }
     );
@@ -226,20 +208,20 @@ const handleConfirmationAction = () => {
     const type = actionType.value;
 
     if (type === 'archive') {
-        router.patch(`/project/${public_id}/archive`, {}, {
+        router.patch(`/category/${public_id}/archive`, {}, {
             preserveScroll: true,
             onSuccess: (page: any) => {
-                if (page.props.data_project) {
-                    data_project.value = page.props.data_project
+                if (page.props.data_category) {
+                    data_category.value = page.props.data_category
                 }
             }
         });
     } else if (type === 'destroy') {
-        router.delete(`/project/${public_id}`, {
+        router.delete(`/category/${public_id}`, {
             preserveState: true,
             onSuccess: (page: any) => {
-                if (page.props.data_project) {
-                    data_project.value = page.props.data_project
+                if (page.props.data_category) {
+                    data_category.value = page.props.data_category
                 }
             }
         });

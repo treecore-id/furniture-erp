@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('wood', function (Blueprint $table) {
             $table->id();
             $table->ulid('public_id')->unique();
-            $table->string('name');
+            $table->string('name', 50);
             $table->text('description')->nullable();
-            $table->foreignId('user_created')->nullable()->constrained('users');
-            $table->foreignId('user_updated')->nullable()->constrained('users');
+            $table->foreignId('user_created')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('user_updated')->nullable()->constrained('users')->nullOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

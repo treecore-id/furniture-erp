@@ -1,10 +1,8 @@
 <template>
-    <Head title="Wood" />
-
+    <Head title="Create New Wood" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Create New Wood" />
         <Form v-bind="WoodController.store.form()" :options="{preserveScroll: true}" reset-on-success :reset-on-error="[ 'name', 'description']" v-slot="{ errors, processing, recentlySuccessful }" autocomplete="off">
-            <div class="flex flex-col md:flex-row px-4 py-6">
+            <div class="flex flex-col px-4 py-6">
                 <section class="max-w-xl space-y-6">
                     <HeadingSmall title="Create New Wood" description="Ensure your account is using a long, random password to stay secure" />
                     <div class="space-y-6">

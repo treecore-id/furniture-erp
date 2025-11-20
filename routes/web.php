@@ -16,6 +16,7 @@ Route::get('/', function () {
 
 
 Route::middleware('auth')->group(function () {
+    // Route: Platform
     Route::get('dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 
     Route::resource('project', ProjectController::class)->except('edit');
@@ -26,13 +27,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::redirect('manage', '/manage/wood');
+    // Route: Manage
+    Route::resource('category', CategoryController::class)->except('edit');
+    Route::patch('category/{category}/archive', [CategoryController::class, 'archive'])->name('category.archive');
 
-    Route::resource('manage/category', CategoryController::class)->except('edit');
-    Route::patch('manage/category/{category}/archive', [CategoryController::class, 'archive'])->name('category.archive');
-
-    Route::resource('manage/wood', WoodController::class)->except('edit');
-    Route::patch('manage/wood/{wood}/archive', [WoodController::class, 'archive'])->name('wood.archive');
+    Route::resource('wood', WoodController::class)->except('edit');
+    Route::patch('wood/{wood}/archive', [WoodController::class, 'archive'])->name('wood.archive');
 });
 
 require __DIR__.'/settings.php';
