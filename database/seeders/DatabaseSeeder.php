@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             'data_type' => 'string',
             'description' => 'Treecore intends to produce high quality, stylized and innovatively designed genuine wooden furniture keeping with the international standards.',
         ]);
-        
+
         AppSetting::create([
             'key_name' => 'company_logo',
             'value' => '/images/logo-treecore-only.png',
@@ -29,7 +29,8 @@ class DatabaseSeeder extends Seeder
             'description' => 'Company logo without text.'
         ]);
 
-        User::factory()->create(['name' => 'Administrator', 'email' => 'admin@mail.com']);
+        User::factory()->create(['name' => 'Administrator', 'email' => 'admin@mail.com', 'role' => 1]);
+        User::factory()->create(['name' => 'Staff', 'email' => 'staff@mail.com', 'role' => 2]);
 
         Wood::create(['name' => 'Teak', 'description' => 'Tectona Grandis — Native to South Asia but extensively cultivated on plantations across tropical regions in Africa, Asia, and Latin America. The heartwood starts as golden to medium brown, darkening over time. Typically grows between 30 and 40 meters tall, with a trunk diameter of 1 to 1.5 meters.']);
         Wood::create(['name' => 'Mahogany', 'description' => 'Swietenia macrophylla — Native to South America, Mexico, and Central America. It has also been introduced and cultivated in the Philippines, Singapore, Malaysia, Hawaii, and various plantations worldwide. Ranges from pale pinkish brown to rich reddish brown, deepening over time. It exhibits chatoyancy, an optical effect enhancing its visual appeal. Grows between 46 to 60 meters tall, with trunk diameters of 1 to 2 meters.']);

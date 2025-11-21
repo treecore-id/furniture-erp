@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use App\Models\AppSetting;
+use App\Models\Category;
 use App\Models\User;
 use App\Models\Wood;
+use App\Observers\CategoryObserver;
 use App\Observers\WoodObserver;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -22,13 +25,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('admin', function (User $user) {
-            return $user->role === 1;
+            return ($user->role === 1) ? Response::allow() : Response::deny('You must be an administrator.');
         });
-        Gate::define('user', function (User $user) {
-            return $user->role === 2;
-        });
-        Gate::define('guest', function (User $user) {
-            return $user->role === 3;
+        Gate::define('staff', function (User $user) {
+            return ($user->role === 1 || $user->role === 2) ? Response::allow() : Response::deny('You must be an staff.');
         });
 
         if (Cache::has('app_settings_config')) {
@@ -41,5 +41,6 @@ class AppServiceProvider extends ServiceProvider
         config(['app_settings' => $appSetting]);
 
         Wood::observe(WoodObserver::class);
+        Category::observe(CategoryObserver::class);
     }
 }

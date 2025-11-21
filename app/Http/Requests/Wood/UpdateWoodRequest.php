@@ -16,8 +16,18 @@ class UpdateWoodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1024',
+            'name' => 'required|string|max:50',
+            'description' => 'nullable|string|max:1000',
+        ];
+    }
+
+    // Get the error messages for the defined validation rules.
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'name is required',
+            'name.max' => 'maximum value 50 characters',
+            'description.max' => 'maximum value 1000 characters',
         ];
     }
 }

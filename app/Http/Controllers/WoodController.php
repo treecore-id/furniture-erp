@@ -51,7 +51,9 @@ class WoodController extends Controller
     /* Display the specified resource. */
     public function show(Wood $wood)
     {
-        return Inertia::render('wood/WoodDetailsPage', ['data_wood' => $wood->only('id', 'public_id', 'name', 'description')]);
+        return Inertia::render('wood/WoodDetailsPage', [
+            'data_wood' => $wood->only('id', 'public_id', 'name', 'description')
+        ]);
     }
 
     /* Show the form for editing the specified resource. */

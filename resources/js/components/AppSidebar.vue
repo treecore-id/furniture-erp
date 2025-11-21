@@ -12,6 +12,7 @@ const page = usePage();
 const menu: NavMenu[] = [
     {
         label: 'Platform',
+        permissions: 'staff',
         items: [
             {
                 title: 'Dashboard',
@@ -47,6 +48,7 @@ const menu: NavMenu[] = [
     },
     {
         label: 'Manage',
+        permissions: 'admin',
         items: [
             {
                 title: 'Wood',
