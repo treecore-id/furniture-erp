@@ -15,7 +15,7 @@ class CategoryController extends Controller
     public function index()
     {
         $data_category = Category::select([
-            'id', 'public_id', 'name', 'description'
+            'id', 'public_id', 'name', 'slug'
         ])->orderBy('name')->paginate(3);
 
         return Inertia::render('category/CategoryPage', [
@@ -65,7 +65,7 @@ class CategoryController extends Controller
     /* Update the specified resource in storage. */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $validated = $request->safe()->only(['name', 'description']);
+        $validated = $request->safe()->only(['name', 'slug']);
 
         try {
             $category->update($validated);

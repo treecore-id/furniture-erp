@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Models\Wood;
 use App\Observers\CategoryObserver;
 use App\Observers\WoodObserver;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -25,10 +24,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('admin', function (User $user) {
-            return ($user->role === 1) ? Response::allow() : Response::deny('You must be an administrator.');
+            return ($user->role == 1);
         });
+
         Gate::define('staff', function (User $user) {
-            return ($user->role === 1 || $user->role === 2) ? Response::allow() : Response::deny('You must be an staff.');
+            return ($user->role == 1 || $user->role == 2);
         });
 
         if (Cache::has('app_settings_config')) {

@@ -9,16 +9,23 @@
                     <div class="space-y-6">
                         <div class="grid gap-2">
                             <Label for="name">Name</Label>
-                            <Input id="name" name="name" v-model="form_edit_wood.name" type="text" class="mt-1 block w-full" placeholder="Wood Name" />
+                            <Input v-if="editMode" id="name" name="name" v-model="form_edit_wood.name" type="text" class="mt-1 block w-full" placeholder="Wood Name" />
+                            <p v-else class="mt-1 block w-full leading-7 text-sm/relaxed">
+                                {{ form_edit_wood.name }}
+                            </p>
                             <InputError :message="errors.name" />
                         </div>
                         <div class="grid gap-2">
                             <Label for="description">Description</Label>
-                            <Textarea id="description" name="description" v-model="form_edit_wood.description" type="text" rows="5" class="mt-1 block w-full" placeholder="Description" />
+                            <Textarea v-if="editMode" id="description" name="description" v-model="form_edit_wood.description" type="text" rows="5" class="mt-1 block w-full" placeholder="Description" />
+                            <p v-else class="mt-1 block w-full leading-7 text-sm/relaxed">
+                                {{ form_edit_wood.description }}
+                            </p>
                             <InputError :message="errors.description" />
                         </div>
                         <div class="flex items-center gap-4">
-                            <Button :disabled="processing" data-test="update-password-button">Save</Button>
+                            <Button v-if="editMode" :disabled="processing">Save</Button>
+                            <Button v-else @click="editMode = true" class="cursor-pointer">Edit</Button>
                             <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0" leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
                                 <p v-show="recentlySuccessful" class="text-sm text-neutral-600">
                                     Saved.
@@ -44,6 +51,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { type BreadcrumbItem } from '@/types';
+import { ref } from 'vue';
 
 interface Wood {
     id: number;
@@ -52,6 +60,7 @@ interface Wood {
     description: string;
 }
 
+const editMode = ref(false);
 const data_wood = usePage().props.data_wood as Wood;
 
 const breadcrumbs: BreadcrumbItem[] = [

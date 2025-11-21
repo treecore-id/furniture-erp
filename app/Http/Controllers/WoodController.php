@@ -38,7 +38,7 @@ class WoodController extends Controller
             $wood = Wood::create($validated);
 
             Session::flash('success', $this->messages['save_success']);
-            return to_route('wood.show', $wood->id);
+            return to_route('wood.show', $wood->public_id);
         } catch (\Exception $e) {
             Log::error('Failed to save wood data: ' . $e->getMessage(), [
                 'input_data' => $validated
