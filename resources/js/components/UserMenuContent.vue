@@ -32,7 +32,7 @@ defineProps<Props>();
     <DropdownMenuSeparator />
     <DropdownMenuGroup>
         <DropdownMenuItem :as-child="true">
-            <Link class="block w-full hover:cursor-pointer" :href="edit()" prefetch as="button">
+            <Link class="block w-full cursor-pointer px-2 py-1.5" :href="edit()" prefetch as="button">
                 <Settings class="mr-2 h-4 w-4" />
                 Settings
             </Link>
@@ -40,7 +40,7 @@ defineProps<Props>();
     </DropdownMenuGroup>
     <DropdownMenuSeparator />
     <DropdownMenuItem :as-child="true">
-        <Link class="block w-full hover:cursor-pointer" :href="logout()" @click="handleLogout" as="button" data-test="logout-button">
+        <Link class="block w-full cursor-pointer px-2 py-1.5" :href="logout()" @click="handleLogout" as="button" data-test="logout-button">
             <LogOut class="mr-2 h-4 w-4" />
             Log out
         </Link>

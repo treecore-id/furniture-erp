@@ -25,8 +25,8 @@
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <Table>
+        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-6">
+            <!-- <Table>
                 <TableHeader>
                     <TableRow>
                         <TableHead class="w-[5%] text-center">
@@ -85,7 +85,8 @@
                         </TableCell>
                     </TableRow>
                 </TableBody>
-            </Table>
+            </Table> -->
+            <DataTable :columns="columns" :data="data" />
             <!-- Pagination -->
             <Pagination v-slot="{ page }" @update:page="handlePageChange" :items-per-page="data_wood.per_page" :total="data_wood.total" :default-page="data_wood.current_page">
                 <PaginationContent v-slot="{ items }">
@@ -108,7 +109,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Ellipsis } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -143,7 +144,9 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table';
-
+import type { Wood } from '@/components/wood/columns';
+import { columns } from '@/components/columns'
+import DataTable from '@/components/wood/data-table.vue';
 interface Wood {
     id: number;
     public_id: string;
@@ -169,7 +172,7 @@ interface InertiaPaginated<T> {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Wood',
-        href: '/wood',
+        href: '#',
     },
 ];
 
@@ -177,6 +180,13 @@ const props = defineProps<{
     data_wood: InertiaPaginated<Wood>
 }>();
 
+const data = ref<Wood[]>([]);
+async function getData(): Promise<Wood[]> {
+    return props.data_wood.data
+}
+onMounted(async () => {
+  data.value = await getData()
+})
 const isDialogOpen = ref(false);
 const actionType = ref<'archive' | 'destroy' | null>(null);
 const targetPublicId = ref<string | null>(null);
@@ -228,3 +238,4 @@ const handleConfirmationAction = () => {
     actionType.value = null;
 };
 </script>
+

@@ -2,18 +2,18 @@
     <Head title="Create New Wood" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <Form v-bind="WoodController.store.form()" :options="{preserveScroll: true}" reset-on-success :reset-on-error="[ 'name', 'description']" v-slot="{ errors, processing, recentlySuccessful }" autocomplete="off">
-            <div class="flex flex-col px-4 py-6">
+            <div class="flex flex-col p-6">
                 <section class="max-w-xl space-y-6">
                     <HeadingSmall title="Create New Wood" description="Ensure your account is using a long, random password to stay secure" />
                     <div class="space-y-6">
                         <div class="grid gap-2">
                             <Label for="name">Name</Label>
-                            <Input id="name" name="name" type="text" class="mt-1 block w-full" placeholder="Name" />
+                            <Input id="name" name="name" type="text" class="mt-1 block w-full" :class="errors.name ? 'border-red-500': ''" placeholder="Name" />
                             <InputError :message="errors.name" />
                         </div>
                         <div class="grid gap-2">
                             <Label for="description">Description</Label>
-                            <Textarea id="description" name="description" type="text" rows="5" class="mt-1 block w-full" placeholder="Description" />
+                            <Textarea id="description" name="description" type="text" rows="5" class="mt-1 block w-full" :class="errors.description ? 'border-red-500': ''" placeholder="Description" />
                             <InputError :message="errors.description" />
                         </div>
                         <div class="flex items-center gap-4">
@@ -47,8 +47,11 @@ import { type BreadcrumbItem } from '@/types';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Wood',
-        href: '/wood/create',
+        href: '/wood',
+    },
+    {
+        title: 'Create New',
+        href: '#',
     },
 ];
 </script>
-

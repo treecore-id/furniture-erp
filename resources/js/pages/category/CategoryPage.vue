@@ -25,7 +25,7 @@
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-6">
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -63,24 +63,24 @@
                             {{ item.slug }}
                         </TableCell>
                         <TableCell class="text-left">
-                            {{ item.parent_id }}
+                            {{ item.parent ? item.parent.name : '-' }}
                         </TableCell>
                         <TableCell class="text-center">
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
                                     <Ellipsis class="text-gray-600 hover:cursor-pointer"/>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent>
+                                <DropdownMenuContent align="end">
                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem>
-                                        <Link :href="`/category/${item.public_id}`" class="block w-full cursor-pointer">Details</Link>
+                                        <Link :href="`/category/${item.public_id}`" class="block w-full cursor-pointer px-2 py-1.5">Details</Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
-                                        <button @click="triggerConfirmation(item.public_id, 'archive')" type="button" class="block w-full text-left cursor-pointer">Archive</button>
+                                        <button @click="triggerConfirmation(item.public_id, 'archive')" type="button" class="block w-full text-left cursor-pointer px-2 py-1.5">Archive</button>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
-                                        <button @click="triggerConfirmation(item.public_id, 'destroy')" type="button" class="block w-full text-left cursor-pointer">Delete</button>
+                                        <button @click="triggerConfirmation(item.public_id, 'destroy')" type="button" class="block w-full text-left cursor-pointer px-2 py-1.5">Delete</button>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -152,6 +152,7 @@ interface Category {
     name: string;
     slug: string;
     parent_id: number;
+    parent: Category;
 }
 
 interface PaginationLink {
@@ -172,7 +173,7 @@ interface InertiaPaginated<T> {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Category',
-        href: '/category',
+        href: '#',
     },
 ];
 

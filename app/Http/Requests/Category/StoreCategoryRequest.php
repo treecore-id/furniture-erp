@@ -17,7 +17,8 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'slug' => 'required|string|max:120',
+            'slug' => 'required|string|max:120|unique:categories,slug',
+            'parent_id' => 'nullable|integer|exists:categories,id',
         ];
     }
 
@@ -29,6 +30,7 @@ class StoreCategoryRequest extends FormRequest
             'name.max' => 'maximum value 100 characters',
             'slug.required' => 'slug is required',
             'slug.max' => 'maximum value 120 characters',
+            'slug.unique' => 'category already exists',
         ];
     }
 }

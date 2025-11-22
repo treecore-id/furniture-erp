@@ -6,7 +6,6 @@ use App\Http\Requests\Wood\StoreWoodRequest;
 use App\Http\Requests\Wood\UpdateWoodRequest;
 use App\Models\Wood;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 class WoodController extends Controller
@@ -16,7 +15,7 @@ class WoodController extends Controller
     {
         $data_wood = Wood::select([
             'id', 'public_id', 'name', 'description'
-        ])->orderBy('name')->paginate(3);
+        ])->orderBy('name')->paginate(10);
 
         return Inertia::render('wood/WoodPage', [
             'data_wood' => $data_wood
@@ -37,14 +36,12 @@ class WoodController extends Controller
         try {
             $wood = Wood::create($validated);
 
-            Session::flash('success', $this->messages['save_success']);
-            return to_route('wood.show', $wood->public_id);
+            return to_route('wood.show', $wood->public_id)->with('success', $this->messages['save_success']);
         } catch (\Exception $e) {
             Log::error('Failed to save wood data: ' . $e->getMessage(), [
                 'input_data' => $validated
             ]);
-            Session::flash('error', $this->messages['save_failed']);
-            return back()->withInput();
+            return back()->withInput()->with('error', $this->messages['save_failed']);
         }
     }
 
@@ -70,14 +67,12 @@ class WoodController extends Controller
         try {
             $wood->update($validated);
 
-            Session::flash('success', $this->messages['update_success']);
-            return to_route('wood.index');
+            return to_route('wood.show', $wood->public_id)->with('success', $this->messages['update_success']);
         } catch (\Exception $e) {
             Log::error('Failed to update wood data: ' . $e->getMessage(), [
                 'input_data' => $validated
             ]);
-            Session::flash('error', $this->messages['update_failed']);
-            return back()->withInput();
+            return back()->withInput()->with('error', $this->messages['update_failed']);
         }
     }
 
@@ -92,8 +87,7 @@ class WoodController extends Controller
             Log::error('Failed to archive wood data: ' . $e->getMessage(), [
                 'wood_id' => $wood->id
             ]);
-            Session::flash('error', $this->messages['archive_failed']);
-            return back()->withInput();
+            return back()->withInput()->with('error', $this->messages['archive_failed']);
         }
     }
 
@@ -103,15 +97,13 @@ class WoodController extends Controller
         try {
             $wood->forceDelete();
 
-            Session::flash('success', $this->messages['delete_success']);
-            return to_route('wood.index');
+            return to_route('wood.index')->with('success', $this->messages['delete_success']);
         } catch (\Exception $e) {
             Log::error('Failed to delete wood data: ' . $e->getMessage(), [
                 'user_id' => $userId,
                 'wood_id' => $wood->id
             ]);
-            Session::flash('error', $this->messages['delete_failed']);
-            return back()->withInput();
+            return back()->withInput()->with('error', $this->messages['delete_failed']);
         }
     }
 }
